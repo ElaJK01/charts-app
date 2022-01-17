@@ -1,6 +1,6 @@
 ## Charts-app
 
-Application to data wisualisation with charts
+Application to data visualisation with charts
 
 ### Used technologies:
 * NodeJS,
