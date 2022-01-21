@@ -4,16 +4,30 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/index.css">
   <title>Document</title>
 </head>
 <body>
+    
   <section>
-  <h3>add</h3>
-  <div>
-    <form method="post">
-
+   <div class="container">
+  <div id="form-div">
+    <h3>How many chocolate did you eat this week?</h3>
+    <form method="post" id="cocoform">
+      <select name="coco" id="coco" form="cocoform">
+        <option value="" disabled selected>What kind of chocolate did you eat this week:</option>
+        <option value="dark">dark</option>
+        <option value="milk">milk</option>
+        <option value="white">white</option>
+        <option value="ruby">ruby</option>
+        <option value="compound">compound</option>
+      </select>
+      <input name="quantity" id="quantity" type="number" class="rounded-input" placeholder="How many bars?">
+      <input type="submit" value="add">
     </form>
   </div>
+  </div>
   </section>
+  <div id="attribution"><p>Background photo created by freepik - www.freepik.com</p></div>
 </body>
 </html>
