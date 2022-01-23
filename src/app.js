@@ -2,8 +2,13 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = 3000
-const { engine } = require('express-handlebars');
 
+const handlers = require('../handlers')
+const { engine } = require('express-handlebars');
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -22,8 +27,31 @@ app.get('/', (req, res) => {
   res.render('home')
 })
 
+app.post('/', (req, res) => {
+  const cocoType = req.body.coco
+  const quantity = req.body.quantity
+  if (!quantity || !cocoType) {
+    return res.send('Fill in all fields')
+  }
+  if (!cocoType.trim().length > 0 || !quantity.trim().length > 0) {
+    return res.send('Fill in all fields properly!');
+  }
+  if (isNaN(quantity)) {
+    res.send('Put a number')
+  } else {
+    if (handlers.addToDb(pool, cocoType, quantity)) {
+      return res.render('Aded')
+    } else {
+      return res.send('something went wrong!')
+    }
+     
+  }
+ 
+
+})
+
 app.get('/coco-data', (req, res) => {
-  pool.query('SELECT * FROM chocolate_type;')
+  pool.query('SELECT type_name, SUM (quantity_consumed) FROM chocolate_type GROUP BY type_name;')
   .then((result) => res.send(result.rows))
   .catch((err) => console.error(err))
 })
