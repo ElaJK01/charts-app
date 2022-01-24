@@ -1,61 +1,64 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const port = 3000
+require('dotenv').config();
+const express = require('express');
 
-const handlers = require('../handlers')
+const app = express();
+const port = 3000;
+
 const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(`${__dirname}/public`));
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './src/views');
 
-const { Pool, Client } = require('pg')
+const { Pool } = require('pg');
+const handlers = require('../handlers');
+
 const pool = new Pool({
   user: process.env.USER_COCO,
   host: process.env.HOST,
   database: process.env.DATABASE,
   password: process.env.PASSWORD,
   port: 5432,
-})
+});
 
 app.get('/', (req, res) => {
-  res.render('home')
-})
+  res.render('home');
+});
 
 app.post('/', (req, res) => {
-  const cocoType = req.body.coco
-  const quantity = req.body.quantity
+  const cocoType = req.body.coco;
+  const { quantity } = req.body;
   if (!quantity || !cocoType) {
-    return res.send('Fill in all fields')
+    return res.send('Fill in all fields');
   }
   if (!cocoType.trim().length > 0 || !quantity.trim().length > 0) {
     return res.send('Fill in all fields properly!');
   }
   if (isNaN(quantity)) {
-    res.send('Put a number')
+    res.send('Put a number');
   } else {
     if (handlers.addToDb(pool, cocoType, quantity)) {
-      return res.render('Aded')
-    } else {
-      return res.send('something went wrong!')
+      return res.render('stats');
     }
-     
+    return res.send('something went wrong!');
   }
- 
+});
 
-})
+app.get('/coco-stats', (req, res) => {
+  res.render('stats');
+});
 
+// api
 app.get('/coco-data', (req, res) => {
   pool.query('SELECT type_name, SUM (quantity_consumed) FROM chocolate_type GROUP BY type_name;')
-  .then((result) => res.send(result.rows))
-  .catch((err) => console.error(err))
-})
+    .then((result) => res.send(result.rows))
+    .catch((err) => console.error(err));
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});

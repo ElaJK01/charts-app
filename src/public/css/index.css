@@ -104,3 +104,23 @@ a {
 h1 {
   color:white;
 }
+
+
+#stats {
+  background-color: white;
+  display: block;
+ 
+}
+
+#stats h3 {
+  text-align: center;
+}
+
+.bar-rect {
+  fill:rgba(151, 92, 92, 0.726)
+}
+
+rect.bar-rect:hover { 
+  fill: burlywood;
+  transition: all .2s;
+}
