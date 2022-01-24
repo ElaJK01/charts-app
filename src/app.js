@@ -52,7 +52,6 @@ app.get('/coco-stats', (req, res) => {
   res.render('stats');
 });
 
-// api
 app.get('/coco-data', (req, res) => {
   pool.query('SELECT type_name, SUM (quantity_consumed) FROM chocolate_type GROUP BY type_name;')
     .then((result) => res.send(result.rows))
